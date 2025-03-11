@@ -29,7 +29,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public String registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.registerUser(user); // Handle registration logic
         return "redirect:/api/auth/login"; // Redirect to the login page after successful registration
     }
