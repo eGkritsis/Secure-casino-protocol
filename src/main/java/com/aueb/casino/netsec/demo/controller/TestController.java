@@ -1,7 +1,7 @@
-package controller;
+package com.aueb.casino.netsec.demo.controller;
 
-import entity.User;
-import service.UserService;
+import com.aueb.casino.netsec.demo.entity.User;
+import com.aueb.casino.netsec.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

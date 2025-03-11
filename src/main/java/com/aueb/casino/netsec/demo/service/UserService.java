@@ -1,10 +1,10 @@
-package service;
+package com.aueb.casino.netsec.demo.service;
 
-import entity.User;
+import com.aueb.casino.netsec.demo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
+import com.aueb.casino.netsec.demo.repository.UserRepository;
 
 @Service
 public class UserService {

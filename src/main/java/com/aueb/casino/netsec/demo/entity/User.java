@@ -1,4 +1,4 @@
-package entity;
+package com.aueb.casino.netsec.demo.entity;
 
 import jakarta.persistence.*;
 
