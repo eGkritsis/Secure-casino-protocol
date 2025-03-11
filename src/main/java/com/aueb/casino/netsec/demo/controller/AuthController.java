@@ -1,6 +1,7 @@
 package com.aueb.casino.netsec.demo.controller;
 
 import com.aueb.casino.netsec.demo.entity.User;
+import com.aueb.casino.netsec.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -14,12 +15,12 @@ import com.aueb.casino.netsec.demo.service.UserService;
 @Controller
 @RequestMapping("/api/auth")
 public class AuthController {
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -48,14 +49,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public String loginUser(@RequestParam String username, @RequestParam String password, Model model) {
-        User foundUser = userService.findByUsername(username);
+        User foundUser = userRepository.findByUsername(username);
         if (foundUser != null && passwordEncoder.matches(password, foundUser.getPassword())) {
             return "redirect:/api/auth/home"; // Redirect to the home page if login is successful
         } else {
-            model.addAttribute("error", "Invalid credentials");
-            System.out.println("Invalid credentials");
-            System.out.println("Username: " + foundUser.getUsername());
+            model.addAttribute("error", "Invalid credentials"); // Add an error message to the model
             return "login";
         }
+    }
+
+    @GetMapping("/home")
+    public String showHomePage() {
+        return "home"; // Return the home template
     }
 }
