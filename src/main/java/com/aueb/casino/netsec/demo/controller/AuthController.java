@@ -28,9 +28,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(User user) {
-        userService.registerUser(user); // Handle registration logic
-        return "redirect:/api/auth/login"; // Redirect to the login page after successful registration
+    public String registerUser(@RequestParam("first_name") String firstName,
+                               @RequestParam("last_name") String lastName,
+                               @RequestParam("username") String username,
+                               @RequestParam("password") String password) {
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        userService.registerUser(user);
+        return "redirect:/api/auth/login";
     }
 
     @GetMapping("/login")
@@ -45,7 +53,9 @@ public class AuthController {
             return "redirect:/api/auth/home"; // Redirect to the home page if login is successful
         } else {
             model.addAttribute("error", "Invalid credentials");
-            return "login"; // Show login page with an error message
+            System.out.println("Invalid credentials");
+            System.out.println("Username: " + foundUser.getUsername());
+            return "login";
         }
     }
 }

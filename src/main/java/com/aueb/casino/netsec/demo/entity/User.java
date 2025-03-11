@@ -21,14 +21,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setPassword(String encode) {
         this.password = encode;
     }
@@ -47,5 +39,17 @@ public class User {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 }
