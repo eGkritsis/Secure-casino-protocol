@@ -23,22 +23,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/home").authenticated() // Home requires authentication
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/api/auth/login")
-                        .loginProcessingUrl("/api/auth/login")
-                        .defaultSuccessUrl("/api/auth/home", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout")
-                        .logoutSuccessUrl("/api/auth/login")
-                        .permitAll()
-                );
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll() // Allow registration and login
+                .requestMatchers("/game/play").authenticated() // Allow authenticated access to /game/play
+                .requestMatchers("/api/auth/home").authenticated() // Home requires authentication
+                .anyRequest().authenticated() // All other requests require authentication
+            )
+            .formLogin(form -> form
+                .loginPage("/api/auth/login") // Custom login page
+                .loginProcessingUrl("/api/auth/login") // URL to submit the login form
+                .defaultSuccessUrl("/api/auth/home", true) // Redirect to home after successful login
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/api/auth/logout") // Logout endpoint
+                .logoutSuccessUrl("/api/auth/login") // Redirect to login page after logout
+                .permitAll()
+            );
         return http.build();
     }
 

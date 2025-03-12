@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
-  <title>Home</title>
+  <title>Dice Game</title>
 </head>
-<body>
-<h1>Welcome to the Home Page!</h1>
-<p>You are successfully logged in!</p>
 
-<!-- Logout button -->
-<form th:action="@{/api/auth/logout}" method="post">
-  <button type="submit">Log out</button>
-</form>
+<body>
+  <h1>Welcome to the Home Page!</h1>
+  <p>You are successfully logged in!</p>
+
+  <!-- Play button -->
+  <form th:action="@{/game/play}" method="post">
+    <button type="submit">Play Dice Game</button>
+  </form>
+
+  <!-- Logout button -->
+  <form th:action="@{/api/auth/logout}" method="post">
+    <button type="submit">Log out</button>
+  </form>
 
 </body>
 </html>
