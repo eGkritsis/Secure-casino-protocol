@@ -6,6 +6,12 @@
 </head>
 <body>
 <h1>Welcome to the Home Page!</h1>
-<a th:href="@{/api/auth/logout}">Log out</a>
+<p>You are successfully logged in!</p>
+
+<!-- Logout button -->
+<form th:action="@{/api/auth/logout}" method="post">
+  <button type="submit">Log out</button>
+</form>
+
 </body>
 </html>
