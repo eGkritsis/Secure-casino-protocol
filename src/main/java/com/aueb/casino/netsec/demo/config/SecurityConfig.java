@@ -18,10 +18,12 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/home").authenticated() // Home requires authentication
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/api/auth/login")
+                        .loginProcessingUrl("/api/auth/login")
                         .defaultSuccessUrl("/api/auth/home", true)
                         .permitAll()
                 )
