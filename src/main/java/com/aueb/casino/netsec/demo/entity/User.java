@@ -9,6 +9,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public User() {
+    }
+
+    public User(String firstName, String lastName, String username, String encode) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = encode;
+    }
+
     @Column(nullable = false)
     private String firstName;
 
