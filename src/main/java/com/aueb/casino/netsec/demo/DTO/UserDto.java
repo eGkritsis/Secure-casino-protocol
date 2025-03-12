@@ -1,7 +1,5 @@
 package com.aueb.casino.netsec.demo.DTO;
 
-import com.aueb.casino.netsec.demo.entity.User;
-
 public class UserDto {
     private String username;
     private String password;
