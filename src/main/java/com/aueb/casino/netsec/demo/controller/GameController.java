@@ -1,51 +1,48 @@
 package com.aueb.casino.netsec.demo.controller;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.codec.digest.DigestUtils;
+import com.aueb.casino.netsec.demo.service.GameService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/game")
 public class GameController {
 
+    @Autowired
+    private GameService gameService;
+
     @PostMapping("/play")
     public String play(Model model) {
-
         // Step 1: Generate random strings
-        String rA = RandomStringUtils.randomAlphanumeric(10); // User's random string
-        String rS = RandomStringUtils.randomAlphanumeric(10); // Server's random string
+        String rA = gameService.generateRandomString(); // User's random string
+        String rS = gameService.generateRandomString(); // Server's random string
 
-        // Step 2: User chooses a number (randomly, since she doesn't input it)
-        int playerChoice = (int) (Math.random() * 6) + 1;
+        // Step 2: User chooses a number
+        int playerChoice = gameService.generateRandomNumber(); // User's number
 
-        // Step 3: Server sends rS to User (not shown to User)
+        // Step 3: Server sends rS to User
         // Step 4: User computes the commitment
         String commitmentInput = playerChoice + rA + rS;
-        String hCommit = DigestUtils.sha256Hex(commitmentInput);
+        String hCommit = gameService.computeHash(commitmentInput);
 
         // Step 5: Server chooses its number
-        int serverChoice = (int) (Math.random() * 6) + 1;
+        int serverChoice = gameService.generateRandomNumber(); // Server's number
 
         // Step 6: User reveals her number (not shown to User)
         String revealedInput = playerChoice + rA + rS;
-        String h2 = DigestUtils.sha256Hex(revealedInput);
+        String h2 = gameService.computeHash(revealedInput);
 
         // Step 7: Server verifies the commitment
         if (!h2.equals(hCommit)) {
-            return "Error: Invalid commitment!";
+            model.addAttribute("error", "Invalid commitment!");
+            return "error"; // Render an error page
         }
 
         // Step 8: Determine the result
-        String result;
-        if (playerChoice > serverChoice) {
-            result = "User wins!";
-        } else if (playerChoice < serverChoice) {
-            result = "User loses!";
-        } else {
-            result = "It's a tie!";
-        }
+        String result = gameService.determineResult(playerChoice, serverChoice);
 
         model.addAttribute("result", result);
         model.addAttribute("playerChoice", playerChoice);
@@ -53,8 +50,9 @@ public class GameController {
         model.addAttribute("rA", rA);
         model.addAttribute("rS", rS);
         model.addAttribute("hCommit", hCommit);
-        model.addAttribute("h2", h2);   
+        model.addAttribute("h2", h2);
 
         return "game";
     }
+
 }
