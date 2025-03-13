@@ -1,6 +1,7 @@
 package com.aueb.casino.netsec.demo.controller;
 
 import com.aueb.casino.netsec.demo.DTO.UserDto;
+import com.aueb.casino.netsec.demo.config.JwtUtil;
 import com.aueb.casino.netsec.demo.entity.User;
 import com.aueb.casino.netsec.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private final JwtUtil jwtUtil = new JwtUtil();
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -37,6 +40,18 @@ public class AuthController {
     public String login(Model model, UserDto userDto) {
         model.addAttribute("user", userDto);
         return "login";
+    }
+
+    @PostMapping("/login")
+    public String authenticateUser(@RequestParam String username, @RequestParam String password, Model model) {
+        if ("user".equals(username) && "password".equals(password)) { // Mock check
+            String token = jwtUtil.generateToken(username);
+            model.addAttribute("token", token);
+            return "home"; // Redirects to a welcome page
+        } else {
+            model.addAttribute("error", "Invalid credentials");
+            return "login"; // Return to login page with error
+        }
     }
 
     @GetMapping("/register")
