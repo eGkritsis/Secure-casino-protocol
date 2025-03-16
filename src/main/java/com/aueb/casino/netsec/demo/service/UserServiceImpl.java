@@ -3,7 +3,7 @@ package com.aueb.casino.netsec.demo.service;
 import com.aueb.casino.netsec.demo.DTO.UserDto;
 import com.aueb.casino.netsec.demo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.aueb.casino.netsec.demo.repository.UserRepository;
 
@@ -13,7 +13,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User findByUsername(String username) {
