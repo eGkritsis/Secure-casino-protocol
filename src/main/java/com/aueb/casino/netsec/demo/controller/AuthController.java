@@ -4,11 +4,14 @@ import com.aueb.casino.netsec.demo.DTO.UserDto;
 import com.aueb.casino.netsec.demo.config.JwtUtil;
 import com.aueb.casino.netsec.demo.entity.User;
 import com.aueb.casino.netsec.demo.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -24,6 +27,8 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    private BCryptPasswordEncoder passwordEncoder;
 
     public AuthController(UserService userService) {
         this.userService = userService;
@@ -44,7 +49,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String authenticateUser(@RequestParam String username, @RequestParam String password, Model model) {
-        if ("user".equals(username) && "password".equals(password)) { // Mock check
+        if ("user".equals(username) && "password".equals(password)) {
             String token = jwtUtil.generateToken(username);
             model.addAttribute("token", token);
             return "home"; // Redirects to a welcome page
@@ -61,14 +66,32 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") UserDto userDto, Model model) {
-        User user = userService.findByUsername(userDto.getUsername());
-        if (user != null) {
-            model.addAttribute("error", "User already exists");
-            return "register";
-        } else {
-            userService.save(userDto);
-            return "redirect:/api/auth/login";
+    public String register(@ModelAttribute("user") @Valid UserDto userDto, BindingResult result, Model model) {
+        // Check if there are any validation errors
+        try {
+            if (result.hasErrors()) {
+                // Return the registration page with validation errors
+                return "register";
+            } else {
+                // Check if the user already exists
+                User existingUser = userService.findByUsername(userDto.getUsername());
+                if (existingUser != null) {
+                    model.addAttribute("error", "User already exists");
+                    return "register"; // Return to the form with the error message
+                }
+
+                // Save the user to the database
+                userService.save(userDto);
+
+                // Add success message to model
+                model.addAttribute("success", "Registration successful! You can now log in.");
+
+                // Stay on the registration page with the success message instead of redirecting
+                return "register";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "An error occurred. Please try again.");
         }
+        return "register";
     }
 }
