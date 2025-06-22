@@ -51,10 +51,10 @@ sudo -u postgres psql
 Create the Database and Table
 ```bash
 -- Create database
-CREATE DATABASE GDPR;
+CREATE DATABASE "GDPR";
 
 -- Connect to GDPR database
-\c GDPR;
+\c "GDPR";
 
 -- Create users table
 CREATE TABLE users (
